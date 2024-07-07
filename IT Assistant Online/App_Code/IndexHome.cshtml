@@ -1,0 +1,14 @@
+﻿@using IT_Assistant_Online.Models
+
+
+@helper Render(Post post, System.Web.Mvc.HtmlHelper html)
+{
+<div  class= "qa-q-list-item row">
+    <h3>@post.Title</h3>
+    <p>
+        تم نشره من قبل <span class="glyphicon glyphicon-user"></span>@post.User.UserName تاريخ <span class="glyphicon glyphicon-time"></span> @post.Date
+    </p>
+
+</div>
+   
+}

@@ -1,0 +1,168 @@
+﻿@model IT_Assistant_Online.Models.Articl
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container" style="padding-top:100px;">
+    <div class="panel panel-default">
+        <div class="alert alert-warning" style="font-size:medium;">
+            <strong>الرجاء قراءة التعليمات التالية قبل البدء بالنشر:</strong>
+            <div class="alert alert-info">
+                <ul>
+                    <li>في حقل العنوان: الرجاء إدخال عنوان واضح للمقالة</li>
+                    <li>في حقل المحتوى: يرجى كتابة المقالة.</li>
+                </ul>
+            </div>
+            <p style="font-size:large; color:red;">
+                ملاحظة: جميع الحقول أدناه مطلوبة.
+            </p>
+        </div>
+
+        @using (Html.BeginForm("Edit", "Articls", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <div class="alert alert-danger" id="error-div" style="display:none">
+                    <span id="view-err">
+
+                    </span>
+                </div>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Body, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-10">
+                        <div class="well">
+                            <button id="button" onclick="document.getElementById('File').click(); return false;" class="glyphicon glyphicon-picture">صورة||فيديو</button>
+                            @Html.TextAreaFor(model => model.Body, 50,10, new { @class = "form-control", @id = "Body" })
+                            <input type="file" name="upload" id="File" accept=".jpg,.JPG,.jpeg,.JPEG,.png,.AVI,.avi,.MP4,.mp4" style="display:none" onchange="DisplayImageVideo();" />
+                            <img id="image" hidden />
+                            <video id="video" hidden></video>
+                            @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-1 col-md-10">
+                        <input type="submit" id="save" value="حفظ التغيرات" class="btn btn-success" style="font-size:large;" />
+                        @Html.ActionLink("إلغاء الأمر", "Index", null, new { @class = "btn btn-warning" })
+                    </div>
+                </div>
+                
+                
+            </div>
+        }
+        
+
+    </div>
+
+</div>
+
+
+@section scripts{
+
+    <script src="~/Scripts/Ckeditor/ckeditor.js"></script>
+    <script>
+    CKEDITOR.replace("Body");
+    </script>
+    <script>
+    $(function () {
+        $("#save").click(function () // عند الضغط على الزر " نشر" يتم التحقق من عدة أمور
+        {
+            // الأمر الأول التحقق ان كان هناك ملف مرفوع من قبل المستخدم ام لا
+            if ($("#File").val() == "") {
+                $("#error-div").fadeIn();
+                $("#view-err").append(" الرجاء قم باختيار صورة أو فيديو ");
+                return false;
+            }
+            // الامر الثاني التحقق ان كان الملف صالحاً أم لا
+            var filename = document.getElementById('File').value;
+
+            var extensionFile = filename.substr(filename.lastIndexOf('.') + 1); // تقطيع الملف كاملا من بداية اسم الملف حتى للوصل لنقطة اي امتداد الملف
+
+            var ValidExtensions = ['jpg', 'JPG', 'jpeg', 'JPEG','png', 'AVI','avi', 'MP4', 'mp4']; // امتدادت الملفات الصور والفيديو
+
+            if($.inArray(extensionFile,ValidExtensions) == -1) //  القيمة -1 اي انه امتداد الصورة أو الفيديو  غير صحيح.
+            {
+                $("#error-div").fadeIn();
+                $("#view-err").append(" الرجاء قم باختيار الصورة أو الفيديو بامتداد صحيح");
+                return false;
+            }
+
+            //الأمر الثالث التحقق من حجم الملفات
+
+            var myFileSize = document.getElementById('File').files[0].size / 1024 / 1024; // حولنا حجم الملف الى الميجا بايت
+
+            if(myFileSize > 25)
+            {
+                $("#error-div").fadeIn();
+                $("#view-err").append(" الرجاء قم باختيار ملف بحجم أقل من 25 ميجا بايت");
+                return false;
+            }
+        });
+    });
+
+    </script>
+
+    <script>
+    function DisplayImageVideo()
+    {
+
+        var filename = document.getElementById('File').value;
+
+        var extensionFile = filename.substr(filename.lastIndexOf('.') + 1); // تقطيع الملف كاملا من بداية اسم الملف حتى للوصل لنقطة اي امتداد الملف
+
+        if (extensionFile == "jpg" || extensionFile == "jpeg" || extensionFile == "png" || extensionFile == "JPG" || extensionFile == "JPEG" || extensionFile == "PNG")
+        {
+            document.getElementById('video').hidden = true;
+            document.getElementById('image').hidden = false;
+
+            var file = document.getElementById('File').files[0];
+            var reader = new FileReader();
+            // onload event
+            reader.onload = function (e) {
+                // the result image data
+                document.getElementById('image').src = e.target.result;
+                document.getElementById('image').style.width = '200px';
+                document.getElementById('image').style.height = '100px';
+            }
+            // declare the file loading
+            reader.readAsDataURL(file);
+
+        }
+
+        else if (extensionFile == "mp4" || extensionFile == "avi" || extensionFile == "MP4" || extensionFile == "AVI")
+        {
+            document.getElementById('video').hidden = false;
+            document.getElementById('image').hidden = true;
+
+            var file = document.getElementById('File').files[0];
+            var reader = new FileReader();
+            // onload event
+            reader.onload = function (e) {
+                // the result video data
+                document.getElementById('video').src = e.target.result;
+                document.getElementById('video').style.width = '200px';
+                document.getElementById('video').style.height = '100px';
+                document.getElementById('video').controls = 'controls';
+            }
+            // declare the file loading
+            reader.readAsDataURL(file);
+        }
+    }
+
+    </script>
+}

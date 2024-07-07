@@ -1,0 +1,506 @@
+﻿@using IT_Assistant_Online.Models
+@using Microsoft.AspNet.Identity;
+
+@model IndexViewModel
+
+@{
+    ViewBag.Title = "الصفحة الشخصية";
+
+}
+
+<link href="~/Content/Style.css" rel="stylesheet" />
+
+@{
+    ApplicationDbContext db = new ApplicationDbContext();
+    var profilepicture = db.Users.Find(User.Identity.GetUserId());
+
+    var locationsection = db.Locations.Select(m => m.Section);
+
+}
+
+<div class="container" style="padding-top:80px;">
+    @if (ViewBag.StatusMessage != "")
+    {
+        <div class="alert-successs">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            <strong>@ViewBag.StatusMessage</strong>
+        </div>
+
+    }
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="raw">
+                <div class="col-md-4">
+                    <div class="card">
+                        @if (profilepicture.UserImage == null)
+                        {
+                          <img src="~/images/profile/avatar.png" class="img-rounded" style="width:100%; height:350px;" />
+                        }
+                        else
+                        {
+                           <img src="~/images/profile/@profilepicture.UserImage" class="img-rounded" style="width:100%; height:350px;" />
+                        }
+                        <p class="title">@User.Identity.GetUserName()</p>
+                        <p class="title">@Html.ActionLink("تغير الصورة الشخصية", "UpdatProfilePicture")</p>
+                        <p class="title">@Html.ActionLink("تغير كلمة المرور", "ChangePassword")</p>
+                        <p class="title">@Html.ActionLink("إضافة رقم الهاتف", "AddPhoneNumber")</p>
+                       
+                         @if (User.IsInRole("ComputerExpert"))
+                        {
+                            var postcount = db.Posts.Where(p => p.SectionId.Equals(1)).Where(p => p.IsSolved.Equals(false)).Count();
+                            var messagecount = db.Locations.Where(s => s.Section.Contains("أجهزة الكومبيوتر")).Where(m => m.IsRead.Equals(false)).Count();
+
+                            <p class="title"><a href="@Href("~/Posts/UnSolvedPosts")"> المشاكل التي بحاجة إلى حل <span class="badge"> @postcount </span></a></p>
+                            <p class="title"><a href="@Href("~/Manage/ShowLocationMessages")"> رسائل تحديد المكان <span class="badge">@messagecount </span></a></p>
+                            <p class="title"><a href="@Href("~/Articls/Create")"> إضافة مقالة جديدة</a></p>
+
+                         }
+
+                         else if (User.IsInRole("ElectronicExpert"))
+                         {
+                             var postcount = db.Posts.Where(p => p.SectionId.Equals(2)).Where(p => p.IsSolved.Equals(false)).Count();
+                             var messagecount = db.Locations.Where(s => s.Section.Contains("الأجهزة الإلكترونية")).Where(m => m.IsRead.Equals(false)).Count();
+
+                            <p class="title"><a href="@Href("~/Posts/UnSolvedPosts")"> المشاكل التي بحاجة إلى حل <span class="badge"> @postcount </span></a></p>
+                            <p class="title"><a href="@Href("~/Manage/ShowLocationMessages")"> رسائل تحديد المكان <span class="badge">@messagecount </span></a></p>
+                            <p class="title"><a href="@Href("~/Articls/Create")"> إضافة مقالة جديدة</a></p>
+
+                         }
+
+                         else if (User.IsInRole("MobileExpert"))
+                         {
+                             var postcount = db.Posts.Where(p => p.SectionId.Equals(3)).Where(p => p.IsSolved.Equals(false)).Count();
+                             var messagecount = db.Locations.Where(s => s.Section.Contains("أجهزة الخليوي")).Where(m => m.IsRead.Equals(false)).Count();
+                            <p class="title"><a href="@Href("~/Posts/UnSolvedPosts")"> المشاكل التي بحاجة إلى حل <span class="badge"> @postcount </span></a></p>
+                            <p class="title"><a href="@Href("~/Manage/ShowLocationMessages")"> رسائل تحديد المكان <span class="badge">@messagecount </span></a></p>
+                            <p class="title"><a href="@Href("~/Articls/Create")"> إضافة مقالة جديدة</a></p>
+
+                         }
+
+                         else if (User.IsInRole("Admin"))
+                         {
+
+                             var postcount = db.Posts.Where(p => p.IsSolved.Equals(false)).Count();
+                             var messagecount = db.Locations.Where(m => m.IsRead.Equals(false)).Count();
+                            <p class="title"><a href="@Href("~/Posts/UnSolvedPosts")"> المشاكل التي بحاجة إلى حل <span class="badge"> @postcount </span></a></p>
+                            <p class="title"><a href="@Href("~/Manage/ShowLocationMessages")"> رسائل تحديد المكان <span class="badge">@messagecount </span></a></p>
+                            <p class="title"><a href="@Href("~/Articls/Create")"> إضافة مقالة جديدة</a></p>
+                         }
+                        
+
+                    </div>
+                </div>
+                <div class="col-md-8" style="margin-top:10px">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h2 style="text-align:center">دليل استخدام الموقع</h2></div>
+                        <div class="panel-body" style="height:503px;">
+
+                            <video controls="controls" width="100%">
+                                <source src="~/Videos/UserGuide.mp4" type="video/mp4" />
+                            </video>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2>أقسام الصيانة</h2>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th>اسم القسم</th>                        
+                            <th> </th>
+                        </tr>
+                        @foreach (var _section in db.Sections)
+                        {
+                            <tr>
+                                <td>@_section.Name</td>
+                                <td>
+                                    <a href="@Href("~/Posts/Sections/" + _section.id)"> الذهاب إلى القسم</a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    <div>
+                        <a href="@Href("~/Sections/Create")"> إنشاء قسم</a>
+                         
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+
+    }
+
+</div>
+
+
+<div class="container">
+    @{
+        if (User.IsInRole("Admin"))
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2>المشاكل التي طرحت في أقسام الصيانة</h2></div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th>القسم</th>
+                                <th>العنوان</th>
+                                <th>التاريخ</th>
+                                <th>المستخدم</th>
+                                <th>الحالة</th>
+                            </tr>
+
+                            @foreach (var _post in db.Posts)
+                            {
+                                var SectionName = (from app in db.Sections
+                                                   where app.id == _post.SectionId
+                                                   select app.Name).FirstOrDefault();
+
+                                <tr>
+                                  
+                                    <td>@SectionName</td>
+                                    <td>@_post.Title</td>
+                                    <td>@_post.Date</td>
+                                    <td>@_post.User.UserName</td>
+                                    @if (_post.IsSolved)
+                                    {
+                                        <td style="background-color:green">
+                                            تم حل المشكلة
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td style="background-color:orange">
+                                            لم تحل بعد
+                                        </td>
+                                    }                                    
+                                    <td>
+                                        <a href="@Href("~/Posts/Edit/" + _post.ID )"> تعديل</a> |
+                                        <a href="@Href("~/Posts/Details/" + _post.ID )"> تفاصيل</a> |
+                                        <a href="@Href("~/Posts/Delete/" + _post.ID )"> حذف</a>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        else if (User.IsInRole("ComputerExpert"))
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2> المشاكل التي طرحت في قسم صيانة أجهزة الكومبيوتر </h2></div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th>العنوان</th>
+                                <th>التاريخ</th>
+                                <th>المستخدم</th>
+                                <th>الحالة</th>
+                            </tr>
+
+                            @foreach (var _post in db.Posts.Where(a => a.SectionId.Equals(1)))
+                {
+                                <tr>
+                                    <td>@_post.Title</td>
+                                    <td>@_post.Date</td>
+                                    <td>@_post.User.UserName</td>
+                                    
+                                        @if (_post.IsSolved)
+                                        {
+                                            <td style="background-color:green">
+                                                تم حل المشكلة
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td style="background-color:orange">
+                                                لم تحل بعد
+                                            </td>
+                                        }
+                                    
+                                    <td>
+                                        <a href="@Href("~/Posts/Edit/" + _post.ID )"> تعديل</a> |
+                                        <a href="@Href("~/Posts/Details/" + _post.ID )"> تفاصيل</a> |
+                                        <a href="@Href("~/Posts/Delete/" + _post.ID )"> حذف</a>
+                                    </td>
+                                </tr>
+                 }
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        }
+
+        else if (User.IsInRole("ElectronicExpert"))
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2>المشاكل التي طرحت في قسم صيانة الأجهزة الإلكترونية</h2>
+                </div>
+           <div class="panel-body">
+               <div class="table-responsive">
+                   <table class="table">
+                       <tr>
+                           <th>العنوان</th>
+                           <th>التاريخ</th>
+                           <th>المستخدم</th>
+                           <th>الحالة</th>
+                       </tr>
+
+                       @foreach (var _post in db.Posts.Where(a => a.SectionId.Equals(2)))
+                       {
+                           <tr>
+                               <td>@_post.Title</td>
+                               <td>@_post.Date</td>
+                               <td>@_post.User.UserName</td>
+                               @if (_post.IsSolved)
+                               {
+                                   <td style="background-color:green">
+                                       تم حل المشكلة
+                                   </td>
+                               }
+                               else
+                               {
+                                   <td style="background-color:orange">
+                                       لم تحل بعد
+                                   </td>
+                               }                               
+                               <td>
+                                   <a href="@Href("~/Posts/Edit/" + _post.ID )"> تعديل</a> |
+                                   <a href="@Href("~/Posts/Details/" + _post.ID )"> تفاصيل</a> |
+                                   <a href="@Href("~/Posts/Delete/" + _post.ID )"> حذف</a>
+                               </td>
+                           </tr>
+                       }
+                   </table>
+
+               </div>
+
+           </div>
+             </div>
+                    
+        }
+
+        
+        else if (User.IsInRole("MobileExpert"))
+        {
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2> المشاكل التي طرحت في قسم صيانة أجهزة الخليوي</h2>
+                </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th>العنوان</th>
+                            <th>التاريخ</th>
+                            <th>المستخدم</th>
+                            <th>الحالة</th>
+                        </tr>
+
+                        @foreach (var _post in db.Posts.Where(a => a.SectionId.Equals(3)))
+                        {
+
+                            <tr>
+                                <td>@_post.Title</td>
+                                <td>@_post.Date</td>
+                                <td>@_post.User.UserName</td>
+                                @if (_post.IsSolved)
+                                {
+                                    <td style="background-color:green">
+                                        تم حل المشكلة
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td style="background-color:orange">
+                                        لم تحل بعد
+                                    </td>
+                                }  
+                                <td>
+                                    <a href="@Href("~/Posts/Edit/" + _post.ID )"> تعديل</a> |
+                                    <a href="@Href("~/Posts/Details/" + _post.ID )"> تفاصيل</a> |
+                                    <a href="@Href("~/Posts/Delete/" + _post.ID )"> حذف</a>
+                                </td>
+                            </tr>
+                        }
+
+                    </table>
+
+                </div>
+
+            </div>
+            </div>
+
+
+        }
+
+
+        else if (User.IsInRole("Users"))
+        {
+            var userid = User.Identity.GetUserId();
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2>المشاكل التي طرحتها</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                      
+                            <table class="table">
+                                <tr>
+                                    <th>العنوان</th>
+                                    <th>التاريخ</th>
+                                    <th>المستخدم</th>
+                                    <th>الحالة</th>
+                                </tr>
+                                @foreach (var _post in db.Posts.Where(a => a.UserID.Equals(userid)))
+                                {
+                                    <tr>
+                                        <td>@_post.Title</td>
+                                        <td>@_post.Date</td>
+                                        <td>@_post.User.UserName</td>
+                                        @if (_post.IsSolved)
+                                        {
+                                            <td style="background-color:green">
+                                                تم حل المشكلة
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td style="background-color:orange">
+                                                لم تحل بعد
+                                            </td>
+                                        }
+                                        <td>
+                                            <a href="@Href("~/Posts/Edit/" + _post.ID )"> تعديل</a> |
+                                            <a href="@Href("~/Posts/Details/" + _post.ID )"> تفاصيل</a> |
+                                            <a href="@Href("~/Posts/Delete/" + _post.ID )"> حذف</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                    </div>
+
+                </div>
+            </div>
+           
+
+        }
+    }
+    </div>
+
+<div class="container">
+        
+   @if (User.IsInRole("Admin"))
+     {
+             <div class="panel panel-default">
+                 <div class="panel-heading">
+                     <h2>المستخدمين</h2>
+                 </div>
+                 <div class="panel-body">
+                     <div class="table-responsive">
+                         <table class="table">
+                             <tr>
+                                 <th>اسم المستخدم</th>
+                                 <th>البريد الالكتروني</th>
+                                 <th> رقم الهاتف</th>
+                                 <th>الصفة</th>
+                             </tr>
+
+                             @foreach (var user in db.Users.Where(x=>x.UserName != "Admin"))
+                             {
+                                 var usersWithRoles = (from ur in user.Roles
+                                                       join role in db.Roles on ur.RoleId
+                                                       equals role.Id
+                                                       select role.Name).FirstOrDefault();
+
+                                 <tr>
+                                     <td>@user.UserName</td>
+                                     <td>@user.Email</td>
+                                     <td>@user.PhoneNumber</td>
+                                     <td>@usersWithRoles</td>
+                                     <td>
+                                         @if (usersWithRoles == "Users")
+                                         {
+                                             @Html.ActionLink("ترقية", "Upgrade", new { id = user.Id })
+
+                                         }
+
+                                     </td>
+                                     <td>
+                                         <a href="@Href("~/Manage/Delete/")"> حذف</a>
+                                     </td>
+                                 </tr>
+                             }
+                         </table>
+
+                     </div>
+
+                 </div>
+             </div>
+
+   }
+
+</div>
+
+<div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h2> المقالات</h2></div>
+            <div class="panel-body">
+                @{
+                    foreach (var _articl in db.Articls.OrderByDescending(d => d.Date))
+                    {
+                        <div class="col-md-3">
+                            <div class="thumbnail">
+                                @if (_articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "jpg" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "png" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "JPG" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "PNG" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "jpeg" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "JPEG")
+                                {
+                                    <a href="@Href("~/Articls/Details/" + _articl.id )"><img src="~/image_upload/Articles/@_articl.ArticleImage" style="width:100%; height:150px;" /></a>
+                                }
+
+                                else if (_articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "mp4" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "MP4" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "avi" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "AVI")
+                                {
+                                    <a href="@Href("~/Articls/Details/" + _articl.id)">
+                                        <video style="width:100%; height:150px;">
+                                            <source src="~/image_upload/Articles/@_articl.ArticleImage" />
+                                        </video>
+                                    </a>
+                                }
+                                <div class="caption">
+                                    <p>
+                                        <span class="glyphicon glyphicon-subtitles"> @_articl.Title </span><br />
+                                        <span class="glyphicon glyphicon-time"> @_articl.Date </span><br />
+                                        <span class="glyphicon glyphicon-user"> @_articl.User.UserName </span>
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>

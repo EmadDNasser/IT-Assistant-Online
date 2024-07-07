@@ -1,0 +1,44 @@
+﻿@model IT_Assistant_Online.Models.Articl
+@using Microsoft.AspNet.Identity;
+@using IT_Assistant_Online.Models
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container" style="padding-top:80px;">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2>@Html.DisplayFor(model => model.Title)</h2></div>
+        <div class="panel-body">
+            
+            @if (Model.ArticleImage.Substring(Model.ArticleImage.Length - 3) == "jpg" || Model.ArticleImage.Substring(Model.ArticleImage.Length - 3) == "png" || Model.ArticleImage.Substring(Model.ArticleImage.Length - 3) == "jpeg" || Model.ArticleImage.Substring(Model.ArticleImage.Length - 3) == "JPG" || Model.ArticleImage.Substring(Model.ArticleImage.Length - 3) == "PNG" || Model.ArticleImage.Substring(Model.ArticleImage.Length - 3) == "JPEG")
+            {
+                <img class="img-responsive" src="~/image_upload/Articles/@Html.Raw(Model.ArticleImage)" width="460" height="345">
+            }
+            else if (Model.ArticleImage.Substring(Model.ArticleImage.Length - 3) == "mp4" || Model.ArticleImage.Substring(Model.ArticleImage.Length - 3) == "MP4" || Model.ArticleImage.Substring(Model.ArticleImage.Length - 3) == "avi" || Model.ArticleImage.Substring(Model.ArticleImage.Length - 3) == "AVI")
+            {
+                <video controls="controls" style="width:460px; height:345px" >
+                    <source src="~/image_upload/Articles/@Html.Raw(Model.ArticleImage)" />
+                </video>
+            }
+
+            <p>@Html.Raw(HttpUtility.HtmlDecode(Model.Body))</p>
+        </div>
+        <div class="panel-footer">
+        <p> تمت كتابة المقالة من قبل <span class="glyphicon glyphicon-user"> @Html.DisplayFor(model => model.User.UserName) </span></p>
+
+            @{
+                if (User.IsInRole("Admin") || User.Identity.GetUserId() == Model.UserID)
+                {
+                    <p>
+                        @Html.ActionLink("تعديل", "Edit", new { id = Model.id }) |
+                        @Html.ActionLink("حذف", "Delete", new { id = Model.id })
+                    </p>
+                }
+            }
+
+       </div>
+    </div>
+</div>

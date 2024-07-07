@@ -1,0 +1,34 @@
+﻿
+@{
+    ViewBag.Title = "AddPhoneNumber";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="padding-top:100px;">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2>إضافة رقم الهاتف</h2></div>
+        <div class="panel-body">
+@using (Html.BeginForm("AddPhoneNumber", "Manage", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.Label("رقم الهاتف:", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="text" class="form-control" name="number" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="إضافة" class="btn btn-default" />
+            </div>
+        </div>
+
+    </div>
+}
+        </div>
+
+        
+    </div>
+</div>

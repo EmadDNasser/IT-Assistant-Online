@@ -1,0 +1,95 @@
+﻿@model IT_Assistant_Online.Models.Location
+
+@{
+    ViewBag.Title = "LocationDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    #map {
+        width: 930px;
+        height: 450px;
+        max-width: 100%;
+    }
+</style>
+
+<input id="lat" type="text" hidden value="@Html.DisplayFor(model => model.Lat)" />
+<input id="long" type="text" hidden value="@Html.DisplayFor(model => model.Long)" />
+
+
+<div style="padding-top:100px;">
+    <div class="container">
+        <div class="col-md-10">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table>
+                        <tr>
+                            <td colspan="4">
+                                @if (Model.User.UserImage == null) // اذا كان المستخدم قد غير صورته الشخصية فاعرضها. اما اذا لم يكن فاعرض الصورة الافتراضية وهي افاتار
+                                {
+                                    <img src="~/images/profile/avatar.png" class="media-object" style="width:60px" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/profile/@Model.User.UserImage" class="media-object" style="width:60px" />
+                                }
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                @* اسم المستخدم  *@
+                                <span>@Model.User.UserName</span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="well" style="margin-bottom:2px;">
+                        <p style="font-size:large">
+                            @* الرسالة *@
+                            @Html.Raw(Html.Encode(Model.Message).Replace("\n", "<br/>"))
+                            
+
+                        </p>
+
+                    </div>
+                    
+                    <div id="map" class="col-md-8">
+
+                    </div>
+                </div>
+                <div class="well" style="margin-top:-11px;">
+
+                    <a href=@Href("~/Manage/ShowLocationMessages") class="btn btn-warning" >العودة إلى القائمة</a>
+                    <a href=@Href("~/Manage/MarkReadMessage/" + Model.ID) class="btn btn-success">تحديد الرسالة كمقروء</a>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="http://maps.google.com/maps/api/js?key=AIzaSyDTJuBXzLm4liTWvqDX1RzHspJEpwkT77c" type="text/javascript"></script>
+
+<script>
+    window.onload = function ()
+    {
+        var long = document.getElementById("long").value;
+        var lat = document.getElementById("lat").value;
+
+        var Syria = {
+            center: new google.maps.LatLng(lat, long),
+            zoom: 20,
+            mapTypeId: google.maps.MapTypeId.HYBRID
+        };
+        var map = new google.maps.Map(document.getElementById("map"), Syria);
+
+       var marker = new google.maps.Marker({
+           position: new google.maps.LatLng(lat, long),
+            map: map
+        });
+    }
+</script>

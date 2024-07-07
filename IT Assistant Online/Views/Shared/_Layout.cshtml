@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Style.css" rel="stylesheet" />
+    <link href="~/Content/font/font-awesome.css" rel="stylesheet" />
+
+    <title>@ViewBag.Title - موقع المساعد التقني</title>
+
+
+</head>
+
+
+<body>
+    
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="~/"><i class="glyphicon glyphicon-home"></i> الرئيسية </a></li>
+                    <li><a href="~/Posts/"><i class="glyphicon glyphicon-wrench"></i> قسم الصيانة </a></li>
+                    <li><a href="~/Home/Location"><i class="glyphicon glyphicon-envelope"></i> اخبرنا عن مكانك </a></li>
+                    <li><a href="~/Articls/Index"><i class="glyphicon glyphicon-file"></i> مقالات متنوعة </a></li>
+                    <li>
+                        @using (Html.BeginForm("Search","Home",FormMethod.Post))
+                        {
+                            <input type="text" id="search" name="search" placeholder="بحث.." />
+                        }
+                    </li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+
+        </div>
+        <div class="container">
+            @RenderBody()
+            <hr />
+            <footer class="myfooter">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+
+                            <h2>أخبرنا عن مكانك</h2>
+                            <a href="~/Home/Location"><img src="~/images/syria.jpg" class="img-rounded" alt="اخبرنا عن مكانك" width="200" height="100" /></a>
+                        </div>
+                        <div class="col-md-4">
+                            <h3>
+                                <i class="glyphicon glyphicon-hand-down"></i>
+                                روابط هامة
+                            </h3>
+                            <ul>
+                                <li><a href="https://www.mutaz.net/free-programs/" target="_blank">موقع معتز لتحميل البرامج</a></li>
+                                <li><a href="https://academy.hsoub.com/" target="_blank">أكاديمية الحاسوب</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h3>
+                                <i class="glyphicon glyphicon-globe"></i>
+                                تواصل معنا
+                            </h3>
+                            <ul>
+                                <li><a href="#"><i class="fa fa-youtube"></i> شاهدنا على يوتيوب </a></li>
+                                <li><a href="#"><i class="fa fa-facebook-square"></i> صفحتنا ع الفيسبوك </a></li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+                <p style="text-align:center">&copy; @DateTime.Now.Year - موقع المساعد التقني عن بعد </p>
+                <p style="text-align:center">emad.naser1@gmail.com &nbsp; +963938209135 </p>
+            </footer>
+        </div>
+
+   
+
+    <script src="~/Scripts/jquery.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

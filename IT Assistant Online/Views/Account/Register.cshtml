@@ -1,0 +1,76 @@
+﻿@model IT_Assistant_Online.Models.RegisterViewModel
+@{
+    ViewBag.Title = "إنشاء حساب جديد";
+}
+
+<div class="container" style="padding-top:100px;">
+        <div class="alert alert-success" style="font-size:medium;">
+            <strong>أهلا وسهلا في موقع المساعد التقني</strong>
+            <div class="alert alert-info">
+                <p style="font-size:large;">
+                    تفضل بالاشتراك معنا وتسجيل حساب جديد.
+                </p>
+                <ul>
+                    <li>قم بادخال المعلومات الواردة أدناه. والضغط على زر تسجيل.</li>
+                    <li>ستصلك رسالة لتفعيل الحساب على بريدك الالكتروني المدخل.</li>
+                    <li>بعد تفعيل الحساب. ستكون قد اصحبت عضواً معنا في الموقع.</li>
+                    <li>إن كنت من الخبراء وترغب بالانضمام الى فريق الخبراء في الموقع. يرجى اعلام الادارة ، وذلك بارسال رسالة من صفحتك الشخصية. وستم معالجة الطلب من قبل الادارة </li>
+
+                </ul>
+             
+                </div>
+            <div class="row" style="font-size:large;">
+                <div class="col-md-10">
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        
+                            <hr />
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Username, new { @class = "col-md-2 control-label" })
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control" placeholder="أدخل اسم المستخدم" name="UserName">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control" placeholder="أدخل البريد الالكتروني" name="Email">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.PhoneNumber, new { @class = "col-md-2 control-label" })
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control" placeholder="أدخل رقم الهاتف " name="PhoneNumber">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                                <div class="col-md-10">
+                                    <input type="password" class="form-control" placeholder="أدخل كلمة المرور" name="Password">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+                                <div class="col-md-10">
+                                    <input type="password" class="form-control" placeholder="أعد كتابة كلمة المرور" name="ConfirmPassword">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" class="btn btn-success" value="تسجيل" />
+                                </div>
+                            </div>
+                    }
+                </div>
+            </div>
+
+
+            </div>
+        </div>

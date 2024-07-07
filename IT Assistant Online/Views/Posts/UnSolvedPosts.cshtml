@@ -1,0 +1,121 @@
+﻿@model IEnumerable<IT_Assistant_Online.Models.Post>
+
+@{
+    ViewBag.Title = "المشاكل التي بحاجة إلى حل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="padding-top:80px">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2>المشاكل التي بحاجة إلى حل</h2></div>
+        <div class="panel-body">
+           
+                <table class="table">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Title)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Date)
+                        </th>
+                        <th>
+                            القسم
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        if (User.IsInRole("Admin"))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Date)
+                                </td>
+                                
+                                @if (item.SectionId == 1)
+                                {
+                                    <td>اجهزة الكومبيوتر</td>
+                                }
+                                @if (item.SectionId == 2)
+                                {
+                                    <td>الأجهزة الإلكترونية</td>
+                                }
+                                @if (item.SectionId == 3)
+                                {
+                                    <td>اجهزة الخليوي</td>
+                                }
+                                <td>
+                                    @Html.ActionLink("تفاصيل", "Details", new { id = item.ID }) |
+                                    @Html.ActionLink("حذف", "Delete", new { id = item.ID })
+                                </td>
+                            </tr>
+                        }
+
+                        else if (User.IsInRole("ComputerExpert") && item.SectionId == 1)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Date)
+                                </td>
+                                <td>
+                                    أجهزة الكومبيوتر
+                                </td>
+                                <td>
+                                    @Html.ActionLink("تفاصيل", "Details", new { id = item.ID }) |
+                                    @Html.ActionLink("حذف", "Delete", new { id = item.ID })
+                                </td>
+                            </tr>
+                        }
+
+                        else if (User.IsInRole("ElectronicExpert") && item.SectionId == 2)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Date)
+                                </td>
+                                <td>
+                                    الأجهزة الإلكترونية
+                                </td>
+                                <td>
+                                    @Html.ActionLink("تفاصيل", "Details", new { id = item.ID }) |
+                                    @Html.ActionLink("حذف", "Delete", new { id = item.ID })
+                                </td>
+                            </tr>
+                        }
+
+                        else if (User.IsInRole("MobileExpert") && item.SectionId == 3)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Date)
+                                </td>
+                                <td>
+                                    أجهزة الخليوي
+                                </td>
+                                <td>
+                                    @Html.ActionLink("تفاصيل", "Details", new { id = item.ID }) |
+                                    @Html.ActionLink("حذف", "Delete", new { id = item.ID })
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                </table>
+
+        </div>
+    </div>
+</div>
+

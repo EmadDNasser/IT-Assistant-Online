@@ -1,0 +1,56 @@
+﻿@using IT_Assistant_Online.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "تسجيل الدخول";
+}
+
+
+<div class="container" style="padding-top:100px;">
+<div class="col-md-10">
+    <div class="alert alert-success" style="font-size:medium;">
+        <strong>أهلا وسهلا في موقع المساعد التقني</strong>
+        <div class="alert alert-info">
+            <p style="font-size:large;">
+               تفضل بتسجيل الدخول بادخال اسم المستخدم وكلمة المرور الخاصة بك. إن كنت لا تملك حساب من فضلك اضغط على زر إنشاء حساب جديد..
+            </p>
+        </div>
+
+        <div class="row" style="font-size:large;">
+            <div class="col-md-10">
+                <section id="loginForm">
+                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                        @Html.AntiForgeryToken()
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.UserName, new { @class = "col-md-4 control-label" })
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" placeholder="أدخل اسم المستخدم" name="UserName">
+                                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Password, new { @class = "col-md-4 control-label" })
+                            <div class="col-md-8">
+                                <input type="password" class="form-control" placeholder="أدخل كلمة المرور" name="Password">
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-4 col-md-8">
+                                <input type="submit" value="تسجيل الدخول" class="btn btn-success" />
+                            </div>
+                        </div>
+                        <hr />
+                        <p style="text-align:center">
+                            <a href="~/Account/Register" class="btn btn-info" style="font-size:large">إنشاء حساب جديد</a>
+                        </p>
+                    }
+                </section>
+            </div>
+        </div>
+    </div>
+
+</div>   
+</div>

@@ -1,0 +1,38 @@
+﻿@model IT_Assistant_Online.Models.Articl
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container" style="padding-top:75px; font-family:'Times New Roman', Times, serif; font-size:large;">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2> هل أنت متأكد من الحذف؟</h2></div>
+        <div class="panel-body">
+            <dl class="dl-horizontal">
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Title)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
+
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions no-color">
+                    <input type="submit" value="حذف" class="btn btn-default" /> |
+                    @Html.ActionLink("إلغاء الأمر", "Index")
+                </div>
+            }
+
+            </div>
+        </div>
+    </div>
+            

@@ -1,0 +1,91 @@
+﻿@using IT_Assistant_Online.Models
+@using PagedList;
+@using PagedList.Mvc;
+
+@model  IPagedList<Post>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+    <div class="container">
+        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <img src="~/images/Computer-Repair.jpg" alt="Computer">
+                </div>
+                <div class="item">
+                    <img src="~/images/Electronic-Repair.jpg" alt="Electronic">
+                </div>
+                <div class="item">
+                    <img src="~/images/Mobile-Repair.jpg" alt="Mobile">
+                </div>
+            </div>
+        </div>
+
+                <h2 style="color:#c0e6e5;">أهلاً وسهلاً في قسم الصيانة</h2>
+                <p style="text-align:justify">
+                    أخبرنا عن مشكلتك وسوف نجد لك حلاً بأقرب وقت ممكن. وإن لم نوفق بالحل نستطيع إرسال فريق صيانة خبير إلى مكانك إذا أحببت.
+                    يمكنك تصفح القسم والإطلاع على المشاكل التقنية التي واجهت الغير.
+                </p>
+                <p>
+                    يتوفر لدينا ثلاثة أقسام للصيانة:
+                </p>
+                <div class="well" style="font-size:large; text-align:center; margin-top:15px;">
+                    @{
+                        ApplicationDbContext db = new ApplicationDbContext();
+                        foreach (var _section in db.Sections)
+                        {
+                            <a href="@Href("~/Posts/Sections/" + _section.id )">&nbsp;قسم @_section.Name &nbsp;</a>
+
+                        }
+                    }
+                </div>
+                <a href="~/Posts/Create" class="btn btn-info" style="font-size:x-large;">أخبرنا عن مشكلتك</a>
+            
+       
+               
+    </div>
+</div>
+<div class="container">
+    <div class="panel panel-default"> 
+        <div class="panel-body">
+                <div class="col-md-8">
+                    <h2>ما تم طرحه من مشاكل</h2>
+                    
+                        @foreach (Post post in Model)
+                        {
+                            @IndexPost.Render(post)
+
+                        }
+
+                </div>
+                <div class="col-md-4">
+                    <h2 class="glyphicon glyphicon-tag">علامات</h2>
+                    <div class="well" style="font-size:large">
+                        
+                        @{
+                            foreach (var _category in db.Categories)
+                            {
+                                <a href="@Href("~/Posts/Categories/" + _category.Name)"> @_category.Name <br /></a>
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+        <div class="well" style="text-align:center">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+        </div>
+        </div>
+    
+</div>

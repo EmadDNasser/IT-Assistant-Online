@@ -1,0 +1,45 @@
+﻿@model IT_Assistant_Online.Models.Section
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="padding-top:75px;">
+
+    <h2> حذف</h2>
+    <hr />
+
+    <div class="well" style="font-size:medium;">
+        <div class="alert alert-warning">
+            <h3>هل أنت متأكد من حذف هذا القسم؟</h3>
+        </div>
+        
+        <div>
+
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions no-color">
+                    <input type="submit" value="حذف" class="btn btn-default" /> |
+                    @Html.ActionLink("العودة إلى أقسام الصيانة", "Index")
+                </div>
+            }
+        </div>
+
+</div>
+    </div>
+

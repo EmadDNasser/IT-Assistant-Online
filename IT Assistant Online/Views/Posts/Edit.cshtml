@@ -1,0 +1,109 @@
+﻿@model IT_Assistant_Online.Models.Post
+
+@{
+    ViewBag.Title = "تعديل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/Ckeditor/ckeditor.js"></script>
+
+<div class="container" style="padding-top:100px;">
+    <div class="panel panel-default">
+        <div class="alert alert-warning" style="font-size:medium;">
+            <strong>الرجاء قراءة التعليمات التالية قبل البدء بالنشر:</strong>
+            <div class="alert alert-info">
+                <ul>
+                    <li>في حقل العنوان: الرجاء إدخال عنوان واضح للمشكلة</li>
+                    <li>في حقل المحتوى: يرجى وصف المشكلة بشكل واضح وصريح. المحتوى يدعم تنسيق النصوص. يمكنك إدراج صورة توضيحية إن أحببت. (إدراج الصورة اختياري وليس إجباري).</li>
+                    <li>في حقل القسم: أدخل القسم التي تتبع إليه المشكلة. لكي يتمكن الخبير المختص من معرفة أنك نشرت المشكلة في قسمه. يرجى ملاحظة أنه لن يتم الرد على مشكلة لا تتبع للقسم المختص. .</li>
+                    <li>في حقل العلامة: ادخل أي شيْ تراه مناسباً لكي تكون علامة أو كما يُعرف تاغ. لانها قد تكون مرجعاً لباقي المستخدمين حينما يبحثون عن مشكلة.</li>
+                </ul>
+            </div>
+            <p style="font-size:large; color:red;">
+                ملاحظة: جميع الحقول أدناه مطلوبة. سوف لن تتمكن من النشر إن لم تملأها كلها.
+            </p>
+        </div>
+
+        @using (Html.BeginForm("Edit", "Posts", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Contenet, htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-10">
+                        <div class="well">
+                            <button id="button" onclick="document.getElementById('image').click(); return false;" class="glyphicon glyphicon-picture"> صورة</button>
+                            @Html.TextAreaFor(model => model.Contenet, 10, 10, new { @class = "form-control", @id = "Contenet" })
+                            <input type="file" name="upload" id="image" style="display:none" onchange="DisplayImage();" />
+                            <img id="imag" />
+                            @Html.ValidationMessageFor(model => model.Contenet, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SectionId, "القسم", htmlAttributes: new { @class = "control-label col-md-1" })
+                    <div class="col-md-10">
+                        @Html.DropDownList("SectionID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SectionId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("علامة tag", new { @class = "control-label col-md-1" })
+                    <div class="col-md-10">
+                        <input type="text" name="categories" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-1 col-md-10">
+                        <input type="submit" id="save" value="حفظ" class="btn btn-success" />
+                        
+                        @Html.ActionLink("إلغاء الأمر", "Details", new { id = Model.ID }, new { @class = "btn btn-warning" })
+                                                
+                    </div>
+                    
+                </div>
+            </div>
+        }
+
+    </div>
+
+</div>
+
+<script>
+
+    function DisplayImage() {
+
+        var file = document.getElementById('image').files[0];
+        var reader = new FileReader();
+        // onload event
+        reader.onload = function (e)
+        {
+            // the result image data
+            document.getElementById('imag').src = e.target.result;
+            document.getElementById('imag').style.width = '200px';
+            document.getElementById('imag').style.height = '100px';
+        }
+        // declare the file loading
+        reader.readAsDataURL(file);
+    }
+
+
+</script>
+<script src="~/Scripts/Ckeditor/ckeditor.js"></script>
+
+
+<script>
+    CKEDITOR.replace("Contenet");
+</script>

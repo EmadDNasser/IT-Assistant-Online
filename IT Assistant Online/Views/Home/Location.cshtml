@@ -1,0 +1,191 @@
+﻿@model IT_Assistant_Online.Models.Location
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "تحديد المكان";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    #map {
+        width:930px;
+        height:450px;
+        max-width: 100%;
+        
+    }
+</style>
+
+<div class="container" style="padding-top:80px;" id="container">
+
+    <div class="alert alert-info" style="margin-bottom:2px; font-size:large;">
+        <p >
+          <strong>أهلاً وسهلاً  @User.Identity.GetUserName()</strong>  
+        </p>
+        <p>
+            - قم أولاً بتحديد المكان. <br /> - ثانياً قم بارسال المعلومات.
+        </p>
+    </div>
+
+    <div class="panel panel-default" style="margin-bottom:0px;" id="panel1">
+        <div class="panel-heading">
+            <h2>تحديد المكان</h2>
+        </div>
+        <div class="panel-body">
+
+            <div class="col-md-2">
+                <div class="alert alert-info" style="margin-bottom:5px;">
+                    <p style="text-align:justify">
+                        الرجاء قم بمعرفة مكانك على الخريطة أولاً.
+                        بعد معرفة مكانك، قم بالضغط على الزر <b style="color:green">"تحديد".</b>
+                        وتوجه إلى الخريطة وقم بالضغط بالزر الأيسر للفأرة (مرة واحدة فقط) على مكانك على الخريطة وسوف يتم اضافة علامة (اشارة لموقعك).<br>                     </p>
+                
+                    <p style="background-color:moccasin;">
+                        اذا حدث وأخطأت التحديد، اضغط على الزر " حذف" ليتم حذف العلامة التي قمت بتحديدها، وأعد الضغط على الزر " تحديد " ومن ثم الضغط مرة أخرى على الخريطة.
+                    </p>     
+                   </div>
+                
+                <input type="button" value="تحديد " class="btn btn-success" id="locate" onclick="locate();" />
+
+                 <input type="button" value="حذف " class="btn btn-warning" id="retry" onclick="retry();" />
+               
+            </div>
+
+            <div id="map" class="col-md-8">
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default" id="panel2">
+        <div class="panel-heading">
+            <h2>ارسال المعلومات</h2>
+        </div>
+        <div class="panel-body">
+
+            @using (Html.BeginForm("Location", "Home", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+
+                <div class="form-group" >
+                    @Html.LabelFor(model => model.Long,"احداثيات Long", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" >
+
+                        <input type="text" id="Long" name="LOng" class="form-control" readonly />
+
+                        @Html.ValidationMessageFor(model => model.Long, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Lat,"احداثيات Lat", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-bottom:15px;">
+                        <input type="text" id="Lat" name="Lat" class="form-control" readonly />
+                        @Html.ValidationMessageFor(model => model.Long, "", new { @class = "text-danger" })
+                        
+                    </div>
+
+                </div>
+                
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Section, "القسم", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-bottom:15px;">
+                        @Html.DropDownList("Section", null, htmlAttributes: new { @class = "form-control",@style= "height:40px" })
+                        @Html.ValidationMessageFor(model => model.Section, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Message, "الرجاء اكتب هنا بعض المعلومات، مثل رقم الهاتف، او عنوانك بالتفصيل",htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.Message, 10, 10, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="إرسال" class="btn btn-default" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<script src="http://maps.google.com/maps/api/js?key=AIzaSyDTJuBXzLm4liTWvqDX1RzHspJEpwkT77c" type="text/javascript"></script>
+
+<script type="text/javascript">
+    
+    var click;
+    var long, lat;
+    var markers = [];
+    window.onload = function ()
+    {
+        
+        var Syria = {
+            center: new google.maps.LatLng(34.8021, 38.9968),
+            zoom: 6.7,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map"), Syria);
+
+        //Attach click event handler to the map.
+
+            google.maps.event.addListener(map,'click', function (e)
+            {
+                
+                    //Determine the location where the user has clicked.
+                    var location = e.latLng;
+
+                    if (click == 1)
+                    {
+                        //Create a marker and placed it on the map.
+                         marker = new google.maps.Marker({
+                            position: location,
+                            map: map
+                        });
+
+                        //Attach click event handler to the marker.
+                         google.maps.event.addListener(marker, "click", function (e) {
+                             var infoWindow = new google.maps.InfoWindow({
+                                 content: 'Latitude: ' + location.lat() + '<br />Longitude: ' + location.lng()
+                             });
+                             infoWindow.open(map, marker);
+                         });
+
+                        document.getElementById("Long").value = location.lng();
+                        document.getElementById("Lat").value = location.lat();
+
+                        click = 0;
+                    }
+
+
+                   //Add marker to the array.
+                    markers.push(marker);
+            });
+    };
+
+    function locate()
+    {
+        click = 1;
+        document.getElementById("locate").disabled = true;
+    }
+
+    function retry()
+    { 
+        //Loop through all the markers and remove
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+
+        document.getElementById("locate").disabled = false;
+        
+        document.getElementById("Long").value = "";
+        document.getElementById("Lat").value = "";
+
+    }
+
+</script>

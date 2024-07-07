@@ -1,0 +1,107 @@
+﻿@model IEnumerable<IT_Assistant_Online.Models.Post>
+
+@{
+    ViewBag.Title = "Sections";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+            if (ViewBag.Image == "1")
+            {
+                ViewBag.title = "أهلا وسهلا في قسم صيانة أجهزة الكومبيوتر";
+        <div style="padding-top:80px">
+            <div class="thumbnail">
+                <img src="~/images/Computer-Repair.jpg" />
+            </div>
+        </div>
+
+    }
+    else if (ViewBag.Image == "2")
+    {
+        ViewBag.title = "أهلا وسهلا في قسم صيانة الأجهزة الالكترونية";
+        <div style="padding-top:80px">
+            <div class="thumbnail">
+                <img src="~/images/Electronic-Repair.jpg" />
+            </div>
+        </div>
+
+    }
+    else if (ViewBag.Image == "3")
+    {
+        ViewBag.title = "أهلا وسهلا في قسم صيانة أجهزة الموبايل";
+        <div style="padding-top:80px">
+            <div class="thumbnail">
+                <img src="~/images/Mobile-Repair.jpg" />
+            </div>
+        </div>
+
+    }
+
+}
+<div class="well">
+
+    <h2>@ViewBag.title</h2>
+    <p>
+        <h2><a href="~/Posts/Create" class="btn btn-info">أخبرنا عن مشكلتك</a></h2>
+
+    </p>
+</div>
+<div class="well">
+    <p>
+        <h3>المشاكل التي واجهت الغير</h3>
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                اسم المستخدم
+            </th>
+            <th>
+                حالة المشكلة
+            </th>
+            <th>
+
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.UserName)
+                </td>
+                
+                    @if(item.IsSolved)
+                    {
+                        <td style="background-color:green">
+                            تم حل المشكلة
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="background-color:orange">
+                            لم تحل المشكلة بعد
+                        </td>
+                    }                
+                
+                <td>
+                    @Html.ActionLink("عرض التفاصيل", "Details", new { id = item.ID })
+                </td>
+            </tr>
+        }
+
+    </table>
+
+</div>

@@ -1,0 +1,38 @@
+﻿@using IT_Assistant_Online.Models
+
+    @helper Render(Post post)
+    {
+    <div class="qa-q-list-item row">
+        <a href="@Href("~/Posts/Details/" + post.ID)" data-toggle="tooltip;" title="عنوان المشكلة"><h4>@post.Title</h4></a>
+        <p>
+
+            @if (post.User.UserImage == null)
+            {
+                <img src="~/images/profile/avatar.png" class="media-object" style="width:60px" />
+            }
+            else
+            {
+                <img src="~/images/profile/@post.User.UserImage" class="media-object" style="width:60px" />
+            }
+            <span></span>@post.User.UserName
+            <span class="glyphicon glyphicon-time"></span> @post.Date
+        </p>
+        <a href="@Href("~/Posts/Details/" + post.ID + "#comments")" class="glyphicon glyphicon-comment" data-toggle="tooltip" title="عدد الردود"> @post.Comments.Count </a>
+        @foreach (Category cate in post.Categories)
+        {
+            <a href="@Href("~/Posts/Categories/" + cate.Name)" class="glyphicon glyphicon-tag" data-toggle="tooltip" title="علامة أو تاغ"> @cate.Name </a>
+        }
+        @* اذا كانت المشكلة قد حُلت فاعرض رسالة تم حل المشكلة *@
+        @if (post.IsSolved)
+        {
+            <span class="btn btn-success glyphicon glyphicon-ok" data-toggle="tooltip" title="تم حل المشكلة :)"></span>
+        }
+    </div>
+}
+
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+    </script>

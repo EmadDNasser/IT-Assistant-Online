@@ -1,0 +1,141 @@
+﻿@using IT_Assistant_Online.Models
+@model  IEnumerable<Post>
+
+@{
+    ViewBag.Title = "الصفحة الرئيسية";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ApplicationDbContext db = new ApplicationDbContext();
+}
+
+<div class="jumbotron">
+    <div class="container">
+        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <img src="~/images/Computer-Repair.jpg" alt="Computer">
+                </div>
+                <div class="item">
+                    <img src="~/images/Electronic-Repair.jpg" alt="Electronic">
+                </div>
+                <div class="item">
+                    <img src="~/images/Mobile-Repair.jpg" alt="Mobile">
+                </div>
+            </div>
+        </div>
+              <h2 style="color:#c0e6e5;">أهلاً وسهلاً في موقع المساعد التقني عن بعد</h2>
+              <p style="font-size:x-large; text-align:justify;">
+                  موقع إلكتروني متخصص في مجال خدمات تقنيات المعلومات والمساعدة عن بعد في اجراءات الصيانة للتجهيزات
+                  الإلكترونية والحاسوبية والهواتف الذكية من خلال فريق من المختصين الذين يقدمون خدماتهم
+                  عن بعد بالتواصل معهم مباشرة او تنسيق مواعيد لخدمات تقنية في مكان العمل. بالإضافة إلى
+                  أن الموقع غني بكل ما يتعلق بخدمات تكنولوجيا المعلومات والصيانة الوقائية والتحديثات.
+              </p>
+              <a href="~/Posts/Index" class="btn btn-info" style="font-size:large">المزيد >></a>        
+    </div>
+</div>
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2>أحدث ما تم طرحه من مشاكل:</h2>
+                    <div class="panel panel-default">
+
+                        @foreach (Post post in Model)
+                        {
+                            @IndexPost.Render(post)
+                        }
+                    </div>
+
+                
+                </div>
+
+                <div class="col-md-4">
+                    <h2> علامات: </h2>
+                    <div class="well" style="font-size:large">
+                        @{
+                            foreach (var _category in db.Categories.Take(8))
+                            {
+                                <a href="@Href("~/Posts/Categories/" + _category.Name)"> @_category.Name <br /></a>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h2> أقسام الصيانة: </h2>
+                    <div class="well" style="font-size:large">
+                        <ul class="list-unstyled">
+                            @{
+
+                                foreach (var _section in db.Sections)
+                                {
+                                    <li>
+                                        <a href="@Href("~/Posts/Sections/" + _section.id )">@_section.Name </a>
+                                    </li>
+                                }
+                            }
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            
+
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2> أحدث المقالات</h2></div>
+        <div class="panel-body">
+            @{
+                foreach (var _articl in db.Articls.OrderByDescending(d => d.Date).Take(4))
+                {
+                    <div class="col-md-3">
+                        <div class="thumbnail">
+                            @if (_articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "jpg" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "png" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "JPG" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "PNG" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "jpeg" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "JPEG")
+                            {
+                                <a href="@Href("~/Articls/Details/" + _articl.id )"><img src="~/image_upload/Articles/@_articl.ArticleImage" style="width:100%; height:150px;" /></a>
+                            }
+
+                            else if (_articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "mp4" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "MP4" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "avi" || _articl.ArticleImage.Substring(_articl.ArticleImage.Length - 3) == "AVI")
+                            {
+                                <a href="@Href("~/Articls/Details/" + _articl.id)">
+                                    <video style="width:100%; height:150px;">
+                                        <source src="~/image_upload/Articles/@_articl.ArticleImage" />
+                                    </video>
+                                </a>
+                            }
+                            <div class="caption">
+                                <p>
+                                    <span class="glyphicon glyphicon-subtitles"> @_articl.Title </span><br />
+                                    <span class="glyphicon glyphicon-time"> @_articl.Date </span><br />
+                                    <span class="glyphicon glyphicon-user"> @_articl.User.UserName </span>
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function ()
+    {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

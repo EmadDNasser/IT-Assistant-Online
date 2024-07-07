@@ -1,0 +1,20 @@
+﻿@model IT_Assistant_Online.Models.Post
+@using IT_Assistant_Online.Models
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+   
+<div style="padding-top:100px;">
+            <div class="container">
+                <div class="col-md-10">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            @PostHelper.Render(Model, Html, true)
+                        </div>
+                    </div>
+                </div>
+            </div>
+</div>

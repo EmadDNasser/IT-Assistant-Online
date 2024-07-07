@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "تحديث الصورة الشخصية";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="padding-top:100px;">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2>تحديث الصورة الشخصية</h2></div>
+       <div class="panel-body">
+           @using (Html.BeginForm("UpdatProfilePicture", "Manage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+           {
+            <style>
+                img {
+                    max-width: 100%;
+                    height: auto;
+                }
+            </style>
+
+               @Html.AntiForgeryToken()
+                   <div class="raw">
+                       <div class="col-md-4">
+                           <div>
+                             <button id="button" onclick="document.getElementById('image').click(); return false;" class="btn btn-info" style="margin-bottom:15px;">إختيار صورة</button>
+                             <input type="file" name="upload" id="image" style="display:none" onchange="DisplayImage();" />
+                            </div>
+                          
+                           <div>
+                             <input type="submit" value="حفظ" class="btn btn-default" />
+                           </div>
+                       </div>
+                       <div class="col-md-8">
+                          <img id="imag" src="~/images/profile/avatar.png" class="img-rounded" width="400" height="400" />
+                        </div>
+                       </div>
+           }
+       </div>
+        
+    </div>
+</div>
+<script>
+    function DisplayImage() {
+
+        var file = document.getElementById('image').files[0];
+        var reader = new FileReader();
+        // onload event
+        reader.onload = function (e) {
+            // the result image data
+            document.getElementById('imag').src = e.target.result;
+        }
+        // declare the file loading
+        reader.readAsDataURL(file);
+    }
+
+</script>

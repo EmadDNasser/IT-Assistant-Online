@@ -1,0 +1,40 @@
+﻿@model IEnumerable<IT_Assistant_Online.Models.Post>
+
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="padding-top:75px">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2 class="glyphicon glyphicon-search"> نتيجة البحث</h2></div>
+        <div class="panel-body">
+@foreach (var subitem in Model)
+{
+            <div class="col-md-3">
+                <div class="thumbnail">
+                   
+                        @if (subitem.User.UserImage == null) // اذا كان المستخدم قد غير صورته الشخصية فاعرضها. اما اذا لم يكن فاعرض الصورة الافتراضية وهي افاتار
+                        {
+                            <img src="~/images/profile/avatar.png" style="width:100%; height:150px;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/profile/@subitem.User.UserImage" style="width:100%; height:150px;" />
+                        }
+
+                        <div class="caption">
+                            <p>
+                                <h3 class="glyphicon glyphicon-subtitles"> @Html.DisplayFor(modelitem => subitem.Title)</h3><br />
+                                <h4 class="glyphicon glyphicon-user"> @Html.DisplayFor(modelitem => subitem.User.UserName)</h4><br />
+                                <a href="@Href("~/Posts/Details/" + subitem.ID)" class="btn btn-primary">  التفاصيل >></a>
+                            </p>
+                        </div>
+                    
+                </div>
+            </div>
+
+}
+            </div>
+</div>
+</div>

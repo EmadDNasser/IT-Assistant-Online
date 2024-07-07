@@ -1,0 +1,173 @@
+﻿@*
+        يحتوي هذا الكود على عنوان المشكلة واسم المستخدم الذي نشر المشكلة وصورته وأيضا على محتوى المشكلة وعلى التعليقات الواردة من الخبراء.
+    سيان اسدعاء هذا الكود في صفحة تفاصيل البوست
+*@
+
+
+@using IT_Assistant_Online.Models
+@using Microsoft.AspNet.Identity;
+
+
+
+@helper Render(Post post, System.Web.Mvc.HtmlHelper html, bool showComments)
+{
+    <style>
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+
+    <script src="~/Scripts/Ckeditor/ckeditor.js"></script>
+
+
+    <div class="qa-q-list-item row">
+        <table>
+            <tr>
+                <th>
+                    @* اذا كان المستخدم هو صاحب النشر او اذا كان المدير او من الخبراء سيتم تفعيل زر التعديل والحذف *@
+                    @if (!User.IsInRole("Users") || User.Identity.GetUserId() == post.UserID)
+                    {
+                        <ul style="margin-right: -40px;">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="glyphicon glyphicon-cog" data-toggle="tooltip" title="خيارات"></i>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="@Href("~/Posts/Edit/" + post.ID)">تعديل</a></li>
+                                    <li><a href="@Href("~/Posts/Delete/" + post.ID)">حذف</a></li>
+
+                                </ul>
+                            </li>
+                        </ul>
+
+                    }
+
+                </th>
+                <th>
+                    @* عنوان المشكلة  *@
+                    <a href="@Href("~/Posts/Details/" + post.ID) " data-toggle="tooltip" title="عنوان المشكلة"><span>@post.Title</span></a>
+
+                </th>
+
+            </tr>
+            <tr>
+                <td colspan="4">
+                    @if (post.User.UserImage == null) // اذا كان المستخدم قد غير صورته الشخصية فاعرضها. اما اذا لم يكن فاعرض الصورة الافتراضية وهي افاتار
+                    {
+                        <img src="~/images/profile/avatar.png" class="media-object" style="width:60px" />
+                    }
+                    else
+                    {
+                        <img src="~/images/profile/@post.User.UserImage" class="media-object" style="width:60px" />
+                    }
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    @* اسم المستخدم وتاريخ النشر *@
+                    <span>@post.User.UserName</span> <span class="glyphicon glyphicon-time"></span> @post.Date
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    @* اذا لم تكن المشكلة قد حلت فاضغط على الزر لكي تصبح تأخذ علامة على أنها محلولة *@
+                    @if (!User.IsInRole("Users") && !post.IsSolved)
+                    {
+                        <a href=@Href("~/Posts/MarkSolvedPosts/" + post.ID) class="btn btn-default" data-toggle="tooltip" title="إضط هنا إذا تم حل المشكلة"><span class="glyphicon glyphicon-ok"></span></a>
+                    }
+                    @* اذا كانت المشكلة قد حُلت فاعرض رسالة تم حل المشكلة *@
+                    @if (post.IsSolved)
+                    {
+                        <span class="btn btn-success glyphicon glyphicon-ok" data-toggle="tooltip" title="تم حل المشكلة :)"></span>
+                    }
+
+                </td>
+
+            </tr>
+
+
+        </table>
+
+        <div class="well">
+            <p style="font-size:large">
+                @* محتوى البوست او المشكلة *@
+                @html.Raw(HttpUtility.HtmlDecode(post.Contenet))
+
+            </p>
+            @if (post.Image != null) // اذا كانت المحتوى يحتوي على صورة فاعرضها في المحتوى
+            {
+                <img src="~/image_upload/@html.Raw(post.Image)" class="img-rounded" width="650" height="400" />
+            }
+        </div>
+        @* عدد الردود *@
+        <a href="@Href("~/Posts/Details/" + post.ID + "#comments")" class="glyphicon glyphicon-comment" data-toggle="tooltip" title="عدد الردود">&nbsp;@post.Comments.Count </a>
+
+        @foreach (Category cate in post.Categories) // جلب العلامة او بما يعرف بالتاغ
+        {
+            <span class="tag"><a href="@Href("~/Posts/Categories/" + cate.Name)" class="glyphicon glyphicon-tag" data-toggle="tooltip" title="علامة أو تاغ"> @cate.Name </a></span>
+        }
+
+    </div>
+
+if (showComments) // وضعت هذا الشرط لاني سأستدعي الكود في صفحة أخرى و لا أريد ان تضهر التعليقات أو الردود
+{
+        <div class="well">
+            <a id="comments"></a>
+            @* جلب الردود مع ترتيب حسب التاريخ من الاحدث الى الاقدم *@
+            @foreach (Comment comment in post.Comments.OrderByDescending(x => x.Date))
+            {
+                <div class="qa-q-list-item row">
+                    <div>
+                        <div class="alert alert-info">
+                            @* اذا كان المستخدم الذي يرد لحل المشكلة له صورة شخصية فاعرضه . غير ذلك اعرض الصورة الافتراضية وهي افاتار *@
+                            @if (comment.User.UserImage == null)
+                            {
+                                <img src="~/images/profile/avatar.png" class="media-object" style="width:60px" />
+                            }
+                            else
+                            {
+                                <img src="~/images/profile/@comment.User.UserImage" class="media-object" style="width:60px" />
+                            }
+                           
+                                <h4>@comment.User.UserName</h4> @* اسم المستخدم الذي يرد لحل المشكلة *@
+                                <span class="glyphicon glyphicon-time">@comment.Date</span> @* عرض التاريخ *@
+                           
+                            
+                        </div>
+                        <div>
+
+                            <div>@html.Raw(HttpUtility.HtmlDecode(comment.Contenet))</div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+        <div style="padding-top:20px;">
+            @* الفورم الذي سيرسل البيانات الى المخدم  *@
+            <form action="@Href("~/Posts/Comment/" + post.ID)" method="post">
+                <div class="well">
+                    <textarea rows="10" cols="50" class="form-control" name="contenet" id="contenet"></textarea>
+                    <input type="submit" class="btn" name="submit" value="إضافة رد" />
+                </div>
+                <script>
+                        CKEDITOR.replace("contenet");
+                </script>
+            </form>
+        </div>
+}
+}
+
+
+<script>
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+<script src="~/Scripts/jquery-1.10.2.js"></script> @* تضمين مكتبات جافا سكريبت.  *@
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" /> @* تضمين مكتبة البورستراب من اجل تنسيق الصفحات *@

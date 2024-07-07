@@ -1,0 +1,127 @@
+﻿@model IEnumerable<IT_Assistant_Online.Models.Location>
+
+@{
+    ViewBag.Title = "رسائل تحديد المكان";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container" style="padding-top:80px">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2>رسائل تحديد المكان</h2></div>
+        <div class="panel-body">
+
+            <table class="table">
+                <tr>
+                    <th>
+                        اسم المستخدم
+                    </th>
+                    <th>
+                        احداثيات العرض Long
+                    </th>
+                    <th>
+                       احداثيات الطول Lat
+                    </th>
+                    <th>
+                        القسم
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    if (User.IsInRole("Admin"))
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.User.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Long)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Lat)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Section)
+                            </td>
+                            <td>
+                                @Html.ActionLink("تفاصيل", "LocationDetails", new { id = item.ID }) |
+                                @Html.ActionLink("حذف", "Delete", new { id = item.ID })
+                            </td>
+                        </tr>
+                    }
+
+                   else if (User.IsInRole("ComputerExpert") && item.Section.Contains("أجهزة الكومبيوتر"))
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.User.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Long)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Lat)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Section)
+                            </td>
+                            <td>
+                                @Html.ActionLink("تفاصيل", "LocationDetails", new { id = item.ID }) |
+                                @Html.ActionLink("حذف", "Delete", new { id = item.ID })
+                            </td>
+                        </tr>
+                    }
+
+                    else if (User.IsInRole("ElectronicExpert") && item.Section.Contains("الأجهزة الإلكترونية"))
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.User.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Long)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Lat)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Section)
+                            </td>
+                            <td>
+                                @Html.ActionLink("تفاصيل", "LocationDetails", new { id = item.ID }) |
+                                @Html.ActionLink("حذف", "Delete", new { id = item.ID })
+                            </td>
+                        </tr>
+                    }
+
+                    else if (User.IsInRole("MobileExpert") && item.Section.Contains("أجهزة الخليوي"))
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.User.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Long)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Lat)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Section)
+                            </td>
+                            <td>
+                                @Html.ActionLink("تفاصيل", "LocationDetails", new { id = item.ID }) |
+                                @Html.ActionLink("حذف", "Delete", new { id = item.ID })
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </table>
+
+
+            </div>
+        </div>
+    </div>
